@@ -18,6 +18,7 @@ pub async fn actix_web() -> std::io::Result<()> {
             .service(auth::controller::controller::recover_account)
             .service(auth::controller::controller::validate_code_to_recover_account)
             .service(auth::controller::controller::change_password_after_recover_account)
+            // CHlabs routes and controllers
             .service(chlabs::controller::controller::index)
         // .route("/hey", web::get().to(manual_hello))
     })
