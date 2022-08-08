@@ -28,3 +28,8 @@ async fn index() -> Result<impl Responder> {
     };
     Ok(Json(obj))
 }
+
+#[get("/data-test")]
+async fn data_test() -> impl Responder {
+    HttpResponse::Ok().body("Hello world2!")
+}

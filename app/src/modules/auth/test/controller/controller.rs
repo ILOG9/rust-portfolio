@@ -1,4 +1,8 @@
-#[test]
-pub fn it_adds_two() {
-    assert_eq!(4, 4);
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn it_works() {
+        let result = 2 + 2;
+        assert_eq!(result, 4);
+    }
 }

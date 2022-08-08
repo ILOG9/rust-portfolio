@@ -1,4 +1,3 @@
-use colored::*;
 use dotenv::dotenv;
 #[macro_use]
 extern crate dotenv_codegen;
@@ -7,18 +6,17 @@ mod server;
 
 fn main() {
     println!("---------------------------------------------");
-    println!("{}CHLABS ~ Tecnología Chilena", "|".truecolor(233, 107, 86));
+    println!("|CHLABS ~ Tecnología Chilena");
     println!(
-        "software: {} {}{}",
-        dotenv!("APP_NAME").truecolor(233, 107, 86),
-        "V".truecolor(233, 107, 86),
-        dotenv!("APP_VERSION").truecolor(233, 107, 86)
+        "software: {} V{}",
+        dotenv!("APP_NAME"),
+        dotenv!("APP_VERSION")
     );
     println!("---------------------------------------------");
     dotenv().ok();
 
     match server::actix_web() {
         Ok(()) => (),
-        Err(e) => println!("Error {}", e),
+        Err(e) => println!("Server error {}", e),
     }
 }
