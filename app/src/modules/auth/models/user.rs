@@ -11,4 +11,5 @@ pub struct User {
     pub phone_is_verified: String,
     pub verification_code: String,
     pub profile_id: String,
+    pub group_id:String,
 }

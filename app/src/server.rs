@@ -1,6 +1,6 @@
 use crate::modules::{auth, chlabs};
 use actix_web::{middleware::Logger, web, App, HttpServer};
-use mongodb::Client;
+use mongodb::{bson::doc, options::IndexOptions, Client, IndexModel};
 
 #[actix_web::main]
 pub async fn actix_web() -> std::io::Result<()> {
@@ -8,6 +8,9 @@ pub async fn actix_web() -> std::io::Result<()> {
     let uri: String =
         std::env::var("MONGODB_URI").unwrap_or_else(|_| "mongodb://localhost:27017".into());
     let client: Client = Client::with_uri_str(uri).await.expect("failed to connect");
+
+    // Add database rules
+    index_fields_in_database(&client, "user", "email").await;
 
     // Log backtrace
     std::env::set_var("RUST_LOG", "debug");
@@ -31,7 +34,21 @@ pub async fn actix_web() -> std::io::Result<()> {
             .service(chlabs::controller::controller::data_test)
         // .route("/hey", web::get().to(manual_hello))
     })
-    .bind(("127.0.0.1", 8081))?
+    .bind(("0.0.0.0", 8081))?
     .run()
     .await
+}
+
+async fn index_fields_in_database(client: &Client, doc: &str, field: &str) {
+    let options = IndexOptions::builder().unique(true).build();
+    let model = IndexModel::builder()
+        .keys(doc! { field: 1 })
+        .options(options)
+        .build();
+    client
+        .database(dotenv!("DB_NAME"))
+        .collection::<auth::models::user::User>(doc)
+        .create_index(model, None)
+        .await
+        .expect("creating an index should succeed");
 }
